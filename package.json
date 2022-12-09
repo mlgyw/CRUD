@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@sentry/node": "^7.24.2",
+    "@sentry/tracing": "^7.24.2",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.0"
+  },
+  "type": "module"
+}
