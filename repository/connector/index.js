@@ -26,6 +26,7 @@ import { DataTypes } from "sequelize";
   // };
   // async con(){
    const sequelize = new Sequelize('postgres://postgres:'+DBPASS+'@localhost:5432/auto')
+   
    try {
     await sequelize.authenticate()
     console.log('Соединение с БД было успешно установлено')
