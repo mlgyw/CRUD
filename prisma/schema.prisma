@@ -12,18 +12,24 @@ datasource db {
 
 model auto {
   id    Int     @id @default(autoincrement())
-  brandName String  @unique
+  brandName String  
   model  String  @unique
-  fuelType String  @unique
-  bodyType String  @unique
-  puechases String  @unique
+  fuelType String  
+  bodyType String 
+  puechases Int  @unique
+  orders order[]
+
+  @@unique([id, brandName,model])
 }
 model order {
   id    Int     @id @default(autoincrement())
   creationTime String  @unique
-  product  String  @unique
-  name String  @unique
-  status PostStatus  @unique
+  product  auto  @relation(fields: [autoId,autoBrand,autoModel], references: [id,brandName,model])
+  autoId    Int  
+  autoBrand String
+  autoModel String
+  name String  
+  status PostStatus  
 }
 enum PostStatus{
   created
