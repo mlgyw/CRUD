@@ -1,16 +1,16 @@
 //import * as dotenv from 'dotenv';
-import Express  from 'express';
-import { router } from './delivery/index.js';
+import Express from "express";
+import { router } from "./delivery/index.js";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
+import connector from "./Repository/connector.js";
 //dotenv.config();
-const port = 4000
+const port = 4000;
 
 const app = Express();
 
+app.use(router);
 
-app.use(router)
- 
 Sentry.init({
   dsn: "https://fb84b2a3a1d9457a84be709d38a67039@o4504277450227712.ingest.sentry.io/4504299378573312",
   integrations: [
@@ -21,6 +21,7 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-app.listen(port, ()=>{
+app.listen(port, () => {
+  connector.DBconnector();
   console.log(`Server running at http://localhost:${port}/`);
-})
+});
