@@ -1,8 +1,8 @@
 import Express from 'express'
-import {router} from './orders.js'
+import orders from './orders.js'
 
 const app = Express();
 
-app.use(router)
+app.use('/api/orders', orders)
 
 export default app

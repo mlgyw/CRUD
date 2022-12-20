@@ -4,7 +4,7 @@ import DBconnector from "../../Repository/connector.js";
 import orders from "../../UseCase/orders.js";
 import validate from "../../validator/validator.js";
 
-export const router = Express.Router();
+const router = Express.Router();
 
 const order = Joi.object().keys({
   name: Joi.string().required(),
@@ -12,10 +12,13 @@ const order = Joi.object().keys({
 });
 
 router.get("/createOrder", validate(order, "query"), async (req, res) => {
-  let name = req.query.name;
-  let model = req.query.model;
-  let result = await orders.createOrder(name, model);
-  res.send(result);
+  const result = await orders.createOrder(req.query.name, req.query.model);
+  if(result.error){
+  res.sendStatus(500);
+  }
+  else {
+    res.send(result.value)
+  }
 });
 
 const watchStatus = Joi.object().keys({
@@ -23,8 +26,7 @@ const watchStatus = Joi.object().keys({
 });
 
 router.get("/watchStatus", validate(watchStatus, "query"), async (req, res) => {
-  let id = parseInt(req.query.id);
-  let result = await orders.watchStatus(id);
+  let result = await orders.watchStatus(parseInt(req.query.id));
   res.send(result);
 });
 
@@ -34,9 +36,7 @@ const status = Joi.object().keys({
 });
 
 router.get("/updateStatus", validate(status, "query"), async (req, res) => {
-  let newStatus = req.query.status;
-  let id = parseInt(req.query.id);
-  let res1 = await orders.updateStatus(newStatus, id);
+  let res1 = await orders.updateStatus(req.query.status, parseInt(req.query.id));
   res.send(res1);
 });
 
@@ -44,8 +44,9 @@ const id = Joi.object().keys({
   id: Joi.number().required(),
 });
 
-router.get("/cancelOrder", async (req, res) => {
-  let id = parseInt(req.query.id);
-  let res1 = await orders.cancelOrder(id);
+router.get("/cancelOrder",validate(id, "query"), async (req, res) => {
+  let res1 = await orders.cancelOrder(parseInt(req.query.id));
   res.send(res1);
 });
+
+export default router

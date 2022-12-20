@@ -1,6 +1,6 @@
 //import * as dotenv from 'dotenv';
 import Express from "express";
-import { router } from "./delivery/http/orders.js";
+import  router  from "./delivery/http/orders.js";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import * as dotenv from "dotenv";
@@ -10,8 +10,6 @@ import app from "./delivery/index.js";
 dotenv.config();
 
 const port = process.env.PORT;
-
-// app.use(router);
 
 Sentry.init({
   dsn: process.env.DSN,
