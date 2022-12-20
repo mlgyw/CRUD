@@ -1,11 +1,10 @@
-import connector from "./connector.js";
+import DBconnector from "./connector.js";
 
 class orders {
-  constructor() {}
   async createOrder(name, model) {
-    const client = await connector.client;
+    const client = await DBconnector.client;
     const autosData = await client.auto.findMany();
-    const res1 = await client.order.create({
+    const newOrder = await client.order.create({
       data: {
         creationTime: "2022-12-16 15:45",
         name: name,
@@ -15,32 +14,33 @@ class orders {
         },
       },
     });
-    return res1;
+    return newOrder;
   }
-  async watchStatus() {
-    const client = await connector.client;
-    const res2 = await client.order.findMany({
+  async watchStatus(id) {
+    const client = await DBconnector.client;
+    const status = await client.order.findMany({
       where: {
-        status: {},
+        id: id,
+        // status: {},
       },
     });
-    return res2;
+    return status;
   }
-  async updateStatus(status, id) {
-    const client = await connector.client;
-    const res1 = await client.order.update({
+  async updateStatus(newStatus, id) {
+    const client = await DBconnector.client;
+    const status = await client.order.update({
       where: {
         id: id,
       },
       data: {
-        status: status,
+        status: newStatus,
       },
     });
-    return res1;
+    return status;
   }
   async cancelOrder(id) {
-    const client = await connector.client;
-    const res1 = await client.order.update({
+    const client = await DBconnector.client;
+    const status = await client.order.update({
       where: {
         id: id,
       },
@@ -48,7 +48,7 @@ class orders {
         status: "cancelled",
       },
     });
-    return res1;
+    return status;
   }
 }
 export default new orders();

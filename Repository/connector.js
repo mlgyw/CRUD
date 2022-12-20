@@ -1,12 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-class connector {
-  client;
-  constructor() {
-    this.client = new PrismaClient();
-  }
-  async DBconnector() {
+class DBconnector {
+    client = new PrismaClient();
+  async createConnection() {
     this.client = new PrismaClient();
     await this.client.$connect();
   }
 }
-export default new connector();
+export default new DBconnector();
