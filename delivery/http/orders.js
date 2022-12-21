@@ -27,7 +27,12 @@ const watchStatus = Joi.object().keys({
 
 router.get("/watchStatus", validate(watchStatus, "query"), async (req, res) => {
   let result = await orders.watchStatus(parseInt(req.query.id));
-  res.send(result);
+  if(result.error){
+    res.sendStatus(500);
+    }
+    else {
+      res.send(result.value)
+    }
 });
 
 const status = Joi.object().keys({
@@ -36,8 +41,13 @@ const status = Joi.object().keys({
 });
 
 router.get("/updateStatus", validate(status, "query"), async (req, res) => {
-  let res1 = await orders.updateStatus(req.query.status, parseInt(req.query.id));
-  res.send(res1);
+  let result = await orders.updateStatus(req.query.status, parseInt(req.query.id));
+  if(result.error){
+    res.sendStatus(500);
+    }
+    else {
+      res.send(result.value)
+    }
 });
 
 const id = Joi.object().keys({
@@ -45,8 +55,13 @@ const id = Joi.object().keys({
 });
 
 router.get("/cancelOrder",validate(id, "query"), async (req, res) => {
-  let res1 = await orders.cancelOrder(parseInt(req.query.id));
-  res.send(res1);
+  let result = await orders.cancelOrder(parseInt(req.query.id));
+  if(result.error){
+    res.sendStatus(500);
+    }
+    else {
+      res.send(result.value)
+    }
 });
 
 export default router

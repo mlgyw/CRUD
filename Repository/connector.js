@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 class DBconnector {
-  client = new PrismaClient();
+  client 
   async createConnection() {
     this.client = new PrismaClient();
     await this.client.$connect();

@@ -2,9 +2,9 @@ import DBconnector from "./connector.js";
 
 class orders {
   async createOrder(name, model) {
-    let result={
+    let result = {
       value: null,
-      error:null
+      error: null,
     };
     try {
       const client = await DBconnector.client;
@@ -21,32 +21,55 @@ class orders {
       });
       result.value = newOrder;
     } catch (error) {
-      result.error = error;
+      result.error = error || new Error("repository error");
     }
     return result;
   }
   async watchStatus(id) {
-    const client = await DBconnector.client;
-    const status = await client.order.findMany({
-      where: {
-        id: id,
-      },
-    });
-    return status;
+    let result = {
+      value: null,
+      error: null,
+    };
+    try {
+      const client = await DBconnector.client;
+      const status = await client.order.findMany({
+        where: {
+          id: id,
+        },
+      });
+      result.value = status;
+    } catch (error) {
+      result.error = error || new Error("repository error");
+    }
+    return result;
   }
   async updateStatus(newStatus, id) {
-    const client = await DBconnector.client;
-    const status = await client.order.update({
-      where: {
-        id: id,
-      },
-      data: {
-        status: newStatus,
-      },
-    });
-    return status;
+    let result = {
+      value: null,
+      error: null,
+    };
+    try {
+      const client = await DBconnector.client;
+      const status = await client.order.update({
+        where: {
+          id: id,
+        },
+        data: {
+          status: newStatus,
+        },
+      });
+      result.value = status;
+    } catch (error) {
+      result.error = error || new Error("repository error");
+    }
+    return result;
   }
   async cancelOrder(id) {
+    let result = {
+      value: null,
+      error: null,
+    };
+    try{
     const client = await DBconnector.client;
     const status = await client.order.update({
       where: {
@@ -56,7 +79,11 @@ class orders {
         status: "cancelled",
       },
     });
-    return status;
+    result.value = status
+  }catch(error){
+    result.error = error || new Error("repository error");
+  }
+    return result;
   }
 }
 export default new orders();
