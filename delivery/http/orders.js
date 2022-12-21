@@ -1,7 +1,7 @@
 import Express from "express";
 import Joi from "joi";
 import DBconnector from "../../Repository/connector.js";
-import orders from "../../UseCase/orders.js";
+import UseCase from "../../UseCase/index.js";
 import validate from "../../validator/validator.js";
 
 const router = Express.Router();
@@ -12,7 +12,7 @@ const order = Joi.object().keys({
 });
 
 router.get("/createOrder", validate(order, "query"), async (req, res) => {
-  const result = await orders.createOrder(req.query.name, req.query.model);
+  const result = await UseCase.orders.createOrder(req.query.name, req.query.model);
   if(result.error){
   res.sendStatus(500);
   }
@@ -26,7 +26,7 @@ const watchStatus = Joi.object().keys({
 });
 
 router.get("/watchStatus", validate(watchStatus, "query"), async (req, res) => {
-  let result = await orders.watchStatus(parseInt(req.query.id));
+  let result = await UseCase.orders.watchStatus(parseInt(req.query.id));
   if(result.error){
     res.sendStatus(500);
     }
@@ -41,7 +41,7 @@ const status = Joi.object().keys({
 });
 
 router.get("/updateStatus", validate(status, "query"), async (req, res) => {
-  let result = await orders.updateStatus(req.query.status, parseInt(req.query.id));
+  let result = await UseCase.orders.updateStatus(req.query.status, parseInt(req.query.id));
   if(result.error){
     res.sendStatus(500);
     }
@@ -55,7 +55,7 @@ const id = Joi.object().keys({
 });
 
 router.get("/cancelOrder",validate(id, "query"), async (req, res) => {
-  let result = await orders.cancelOrder(parseInt(req.query.id));
+  let result = await UseCase.orders.cancelOrder(parseInt(req.query.id));
   if(result.error){
     res.sendStatus(500);
     }
