@@ -16,7 +16,7 @@ model auto {
   model  String  @unique
   fuelType String  
   bodyType String 
-  puechases Int  @unique
+  puechases Int  
   orders order[]
 
   @@unique([id, brandName,model])

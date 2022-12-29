@@ -1,9 +1,9 @@
-import graphql from "graphql";
+import graphql, { __InputValue } from "graphql";
 import { gql } from "apollo-server";
 import DBconnector from "../Repository/connector.js";
 import orders from "../UseCase/orders.js";
-import { PrismaClient } from '@prisma/client';
-
+import { PrismaClient } from "@prisma/client";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 const {
   GraphQLObjectType,
   GraphQLString,
@@ -11,135 +11,116 @@ const {
   GraphQLInt,
   GraphQLSchema,
   GraphQLList,
-  graphqlHTTP
+  graphqlHTTP,
 } = graphql;
-// const client = DBconnector.client
-// // const Cars = new GraphQLObjectType({
-// //   name: "car",
-// //   fields: () => ({
-// //     id: { type: GraphQLID },
-// //     brandName: { type: GraphQLString },
-// //     model: { type: GraphQLString },
-// //     fuelType: { type: GraphQLString },
-// //     bodyType: { type: GraphQLString },
-// //     puechases: { type: GraphQLInt },
-// //   }),
-// // });
-
-// const query = new GraphQLObjectType({
-//   name: "query",
-//   cars: {
-//     type: Cars,
-//     args: { id: { type: GraphQLID } },
-//     resolve(parent, args) {},
-//   },
-// });
-// export default new GraphQLSchema({
-//     query:query
-// })
 
 const client = new PrismaClient();
-await client.$connect();
-const status = await client.order.findMany({
-  select: {
-    id:true 
+client.$connect();
+
+const typeDefs = gql`
+  type Cars {
+    id: Int!
+    brandName: String!
+    model: String
+    fuelType: String
+    bodyType: String
+    puechases: Int
+  }
+  input task {
+    id: Int!
+  }
+  input brand {
+    brand: String!
+  }
+  input typeCars{
+    id: Int!
+    brandName: String!
+    model: String
+    fuelType: String
+    bodyType: String
+    puechases: Int
+  }
+
+  type Query {
+    allCars: [Cars!]!
+    filterCars(input: task): [Cars!]
+    filterBrand(input: brand): [Cars!]
+  }
+
+  type Mutation {
+    addCars(input: typeCars): [Cars!]
+  }
+`;
+
+const resolvers = {
+  Query: {
+    allCars: () => {
+      return client.auto.findMany();
+    },
+    filterCars: (context, id) => {
+      let clear = 0;
+      const id_ = Object.values(id);
+      const iterator = id_.values();
+      for (const value of iterator) {
+        if (typeof value == "object") {
+          clear = Object.values(value);
+        }
+      }
+      const a = parseInt(clear);
+      console.log(a);
+
+      return client.auto.findMany({
+        where: {
+          id: a,
+        },
+      });
+    },
+    filterBrand: (context, brand) => {
+      let clear = 0;
+      const id_ = Object.values(brand);
+      const iterator = id_.values();
+      for (const value of iterator) {
+        if (typeof value == "object") {
+          clear = Object.values(value);
+        }
+      }
+      const a = clear.toString();
+      console.log(a);
+
+      return client.auto.findMany({
+        where: {
+          brandName: a,
+        },
+      });
+    },
   },
-}); 
-//console.log(status)
-
-
-const CarType = new GraphQLObjectType({
-  name: "Cars",
-  fields: () => ({
-    id: { type: GraphQLID },
-    brandName: { type: GraphQLString },
-    model: { type: GraphQLString },
-    fuelType: { type: GraphQLString },
-    bodyType: { type: GraphQLString },
-    puechases: { type: GraphQLInt },
-  }),
+  Mutation: {
+    addCars: (context, data,  ) => { 
+      let clear=0;
+      const id_ = Object.values(data);
+      const iterator = id_.values();
+      for (const value of iterator) {
+        if (typeof value == "object") {
+          clear = Object.values(value);
+        }
+      }
+      //const a = clear.toString();
+      //console.log(a);
+      return client.auto.create({
+        data: {
+          brandName: clear[1],
+          model: clear[2],
+          fuelType: clear[3],
+          bodyType: clear[4],
+          puechases:clear[5]
+        },
+      });
+    },
+  },
+};
+const schema = makeExecutableSchema({
+  resolvers,
+  typeDefs,
 });
 
-const RootQuery = new GraphQLObjectType({
-  name: "RootQuery",
-  fields: {
-    getAllCars: {
-      type: CarType,
-      //args: { id: { type: GraphQLInt } },
-      resolve(parent, args) {
-        const client = new PrismaClient();
-        client.$connect();
-        const status =  client.order.findMany({
-          select: {
-            args:true
-          },
-        }); 
-        console.log(args)
-        return status
-      },
-    },
-    getCurrentUser: {
-      type: new GraphQLList(CarType),
-      args: { id: { type: GraphQLInt } },
-      resolve(parent, { id }) {
-        return client.order.findMany({ where: args })
-        return watchStatus()
-        console.log(a.id)
-        return a.id ;
-      },
-    },
-  },
-});
-const Mutation = new GraphQLObjectType({
-  name: "Mutation",
-  fields: {
-    createCar: {
-      type: CarType,
-      args: {
-        id: { type: GraphQLID },
-        brandName: { type: GraphQLString },
-        model: { type: GraphQLString },
-        fuelType: { type: GraphQLString },
-        bodyType: { type: GraphQLString },
-        puechases: { type: GraphQLInt },
-      },
-      resolve(parent, args) {
-        CarsData.push({
-          id: CarsData.length + 1,
-          brandName: args.brandName,
-          model: args.model,
-          fuelType: args.fuelType,
-          bodyType: args.bodyType,
-          puechases: args.puechases,
-        });
-        return args;
-      },
-    },
-  },
-});
-const schema = new GraphQLSchema({
-  query: RootQuery,
-  mutation: Mutation,
-})
-export default schema
-// export default typeDefs
-// const mocks = {
-//     Query: () => ({
-//       tracksForHome: () => [...new Array(6)]
-//     }),
-//     Track: () => ({
-//       id: () => 'track_01',
-//       title: () => 'Astro Kitty, Space Explorer',
-//       author: () => {
-//         return {
-//           name: 'Grumpy Cat',
-//           photo:
-//             'https://res.cloudinary.com/dety84pbu/image/upload/v1606816219/kitty-veyron-sm_mctf3c.jpg'
-//         };
-//       },
-//       thumbnail: () =>
-//         'https://res.cloudinary.com/dety84pbu/image/upload/v1598465568/nebula_cat_djkt9r.jpg',
-//       length: () => 1210,
-//       modulesCount: () => 6
-//     })
-//   };
+export default schema;
