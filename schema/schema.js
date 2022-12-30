@@ -58,61 +58,29 @@ const resolvers = {
       return client.auto.findMany();
     },
     filterCars: (context, id) => {
-      let clear = 0;
-      const id_ = Object.values(id);
-      const iterator = id_.values();
-      for (const value of iterator) {
-        if (typeof value == "object") {
-          clear = Object.values(value);
-        }
-      }
-      const a = parseInt(clear);
-      console.log(a);
-
       return client.auto.findMany({
         where: {
-          id: a,
+          id: id.input.id,
         },
       });
     },
     filterBrand: (context, brand) => {
-      let clear = 0;
-      const id_ = Object.values(brand);
-      const iterator = id_.values();
-      for (const value of iterator) {
-        if (typeof value == "object") {
-          clear = Object.values(value);
-        }
-      }
-      const a = clear.toString();
-      console.log(a);
-
       return client.auto.findMany({
         where: {
-          brandName: a,
+          brandName: brand.input.brand,
         },
       });
     },
   },
   Mutation: {
     addCars: (context, data,  ) => { 
-      let clear=0;
-      const id_ = Object.values(data);
-      const iterator = id_.values();
-      for (const value of iterator) {
-        if (typeof value == "object") {
-          clear = Object.values(value);
-        }
-      }
-      //const a = clear.toString();
-      //console.log(a);
       return client.auto.create({
         data: {
-          brandName: clear[1],
-          model: clear[2],
-          fuelType: clear[3],
-          bodyType: clear[4],
-          puechases:clear[5]
+          brandName: data.input.brandName,
+          model:data.input.model ,
+          fuelType: data.input.fuelType,
+          bodyType: data.input.bodyType,
+          puechases:data.input.puechases
         },
       });
     },
