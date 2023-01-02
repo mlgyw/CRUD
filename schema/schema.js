@@ -32,6 +32,9 @@ const typeDefs = gql`
   input brand {
     brand: String!
   }
+  input model {
+    model: String!
+  }
   input typeCars{
     id: Int!
     brandName: String!
@@ -45,10 +48,12 @@ const typeDefs = gql`
     allCars: [Cars!]!
     filterCars(input: task): [Cars!]
     filterBrand(input: brand): [Cars!]
+    watchPuechases(input: model): [Cars!]
   }
 
   type Mutation {
     addCars(input: typeCars): [Cars!]
+    deleteCars(input: task): [Cars!]
   }
 `;
 
@@ -71,6 +76,16 @@ const resolvers = {
         },
       });
     },
+    watchPuechases: (context, model) => {
+      return client.auto.findMany({
+        where: {
+          model: model.input.model,
+        },
+        // include:{
+        //   puechases:true,
+        // }
+      });
+    }, 
   },
   Mutation: {
     addCars: (context, data,  ) => { 
@@ -81,6 +96,13 @@ const resolvers = {
           fuelType: data.input.fuelType,
           bodyType: data.input.bodyType,
           puechases:data.input.puechases
+        },
+      });
+    },
+    deleteCars: (context, id) => {
+      return client.auto.deleteMany({
+        where: {
+          id: id.input.id,
         },
       });
     },
