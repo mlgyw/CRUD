@@ -35,6 +35,10 @@ const typeDefs = gql`
   input model {
     model: String!
   }
+  input update {
+    id: Int!
+    puechases: Int!
+  }
   input typeCars{
     id: Int!
     brandName: String!
@@ -54,6 +58,7 @@ const typeDefs = gql`
   type Mutation {
     addCars(input: typeCars): [Cars!]
     deleteCars(input: task): [Cars!]
+    updateCars(input: update): [Cars!]
   }
 `;
 
@@ -103,6 +108,16 @@ const resolvers = {
       return client.auto.deleteMany({
         where: {
           id: id.input.id,
+        },
+      });
+    },
+    updateCars: (context, data) => {
+      return client.auto.update({
+        where: {
+          id: data.input.id,
+        },
+        data:{
+          puechases:data.input.puechases
         },
       });
     },
