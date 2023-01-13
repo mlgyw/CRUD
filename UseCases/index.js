@@ -1,8 +1,8 @@
-import orders from "./orders.js";
+import Orders from "./orders.js";
 class UseCases {
-  orders;
+  Orders;
   constructor() {
-    this.orders = orders;
+    this.Orders = Orders;
   }
 }
 export default new UseCases();
