@@ -1,7 +1,5 @@
 import graphql, { __InputValue } from "graphql";
 import { gql } from "apollo-server";
-import DBconnector from "../Repository/connector.js";
-import orders from "../UseCase/orders.js";
 import { PrismaClient } from "@prisma/client";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 const {
@@ -86,9 +84,6 @@ const resolvers = {
         where: {
           model: model.input.model,
         },
-        // include:{
-        //   puechases:true,
-        // }
       });
     }, 
   },

@@ -13,6 +13,5 @@ const validate = (schema,property) => {
      res.status(422).json({ error: message }) } 
     } 
   } 
-  
-  
+
   export default validate

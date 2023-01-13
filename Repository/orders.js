@@ -8,10 +8,9 @@ class orders {
     };
     try {
       const client = await DBconnector.client;
-      const autosData = await client.auto.findMany();
       const newOrder = await client.order.create({
         data: {
-          creationTime: "2022-12-16 15:45",
+          creationTime: "2022-12-26 15.02",
           name: name,
           status: "created",
           product: {
@@ -87,3 +86,4 @@ class orders {
   }
 }
 export default new orders();
+
